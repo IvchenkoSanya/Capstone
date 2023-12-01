@@ -1,0 +1,20 @@
+{% extends 'semanticportal/base.html' %}
+
+{%  block title %}
+Course Generating
+{% endblock %}
+
+{%  block content %}
+<div class="container text-center">
+    <h1 class="text-center border-bottom pb-2">Creating a course based on Chart GPT</h1>
+
+    <form method="post" action="{% url 'write_course' %}" class="mt-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <input class="btn btn-success" type="submit" value="Submit">
+    </form>
+</div>
+
+{% endblock %}

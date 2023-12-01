@@ -1,0 +1,27 @@
+{% extends 'semanticportal/base.html' %}
+{% load branch_tags %}
+
+{%  block title %}
+Semantic Portal
+{% endblock %}
+
+{%  block content %}
+<div class="container text-center">
+    <h1 class="mt-4 mb-3">Data in Dropdown List</h1>
+    <form method="post" action="{% url 'submit_result' %}" class="d-inline-block">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="branches" class="form-label">Select a branch:</label>
+            <select id="branches" name="branches" class="form-select">
+                {% get_branchList as branches %}
+                {% for branch in branches %}
+                    <option value="{{ branch.branch_name }}">{{ branch.branch_caption }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+{% endblock %}
+

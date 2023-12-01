@@ -1,0 +1,41 @@
+{% extends 'semanticportal/base.html' %}
+{% load branch_tags %}
+
+{%  block title %}
+Submit Result
+{% endblock %}
+
+{%  block content %}
+   <div class="container">
+    <h1 class="mt-5 mb-4">Submission Result</h1>
+
+    {% if selected_branch %}
+        <p>You selected: <strong>{{ selected_branch }}. The data was saved</strong></p>
+
+        <p><a href="{% url 'select_branches' %}" class="btn btn-primary btn-sm">Go to generate personal course</a></p>
+        {% get_branchUrl selected_branch as branch_links %}
+            <ul class="list-unstyled">
+                {% for topic in branch_links %}
+                    <li class="mb-2">
+                        <span class="badge bg-light text-dark">{{ topic.branch }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <style>
+            @media (min-width: 576px) {
+                .list-unstyled li {
+                    display: inline-block;
+                    margin-right: 10px;
+                }
+            }
+            </style>
+
+    {% else %}
+        <p>No branch selected.</p>
+    {% endif %}
+
+    <p class="mt-4"><a href="{% url 'semantic-branch' %}" class="btn btn-secondary btn-sm">Go back to the main page</a></p>
+</div>
+
+{% endblock %}
