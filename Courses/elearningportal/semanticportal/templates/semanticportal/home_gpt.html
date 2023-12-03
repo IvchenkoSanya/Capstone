@@ -1,0 +1,41 @@
+{% load branch_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course_content.course_name }}</title>
+</head>
+
+<body>
+
+    <h1>{{ course_content.course_name }}</h1>
+
+    {% for lesson in course_content.lessons %}
+        <h2>{{ lesson.title }}</h2>
+
+        {% with content=course_content.content|get:lesson.title %}
+            <div class="content-markdown">{{ content.content|safe }}</div>
+        {% endwith %}
+
+    {% endfor %}
+
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/3.0.7/marked.min.js" integrity="sha512-a+W0h6Sho4fGYABZAQg6zdWP/qtyE+gzeVfNB/UApXRLuHKh7bT3TeA/LUOno+pcDjX0Vfzgtz6crFQC3YL9lA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".content-markdown").each(function(){
+            var content = $(this).text();
+            var markedContent = marked(content);
+            $(this).html(markedContent);
+        });
+    });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+[
+  {
+    "query": "blablabla",
+    "llm_version": "gpt_4",
+    "language": "English",
+    "course_content": {
+      "course_name": "A tour of the blablabla language",
+      "lessons": [
+        {
+          "title": "ddafdsf",
+          "topics": []
+        },
+        {
+          "title": "dafsdafasdf",
+          "topics": []
+        },
+        {
+          "title": "cvzcvzvzv",
+          "topics": []
+        },
+        {
+          "title": "vxcbcvngbmcv",
+          "topics": []
+        }
+      ],
+      "content": {}
+    }
+  }
+]

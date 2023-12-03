@@ -78,15 +78,13 @@ def fetch_empty_views_and_save(items):
         for branch_obj in value:
             data_list.append(branch_obj)
 
-    print('branches_without_view')
     branches_without_view = get_requested_branch_text(data_list, view=False)
-    print('branches_without_view')
-    print(branches_without_view)
+
     for item in branches_without_view:
         item.view = fetch_branch_view(item.branch)
         item.save()
 
-    generate_json_file(data_list)
+    return generate_json_file(data_list)
 
 
 def fetch_branch_view(branch_name):
@@ -110,24 +108,23 @@ def generate_course_json_manually(items):
     global resultJSON
     resultJSON = []
     course = items['course']
-    itinialTitle = {
+    resultJSON.append({
         "query": course,
         "llm_version": "gpt_4",
         "language": "English",
         "course_content": {
             "course_name": f'A tour of the {course} language',
             "lessons": [],
-            "lessons_content": []
+            "content": {}
         }
-    }
-    resultJSON.append(itinialTitle)
+    })
 
     title_list = items['topic'].split('\r\n')
-    data_json = []
+
     for title in title_list:
-        data_json.append({'title': title, 'topics': []})
-    populate_content_json(data_json)
+        resultJSON[0]['course_content']['lessons'].append({'title': title, 'topics': []})
     save_json(course)
+    return resultJSON
 
 
 def generate_json_file(data_list):
@@ -141,18 +138,16 @@ def generate_json_file(data_list):
     result_json = serialize('json', branch_requests)
     result_data = json.loads(result_json)
 
-    data_json = []
-    data_text_json = []
     for item in result_data:
         if item['fields']['view'] is not None:
             caption = item['fields']['view']['caption']
             text = item['fields']['view']['text']
             if text:
-                data_json.append({'title': caption, 'topics': []})
-                data_text_json.append({caption: text})
+                resultJSON[0]['course_content']['lessons'].append({'title': caption, 'topics': []})
+                resultJSON[0]['course_content']['content'].append({caption: {'content': text}})
 
-    populate_content_json(data_json, data_text_json)
     save_json()
+    return resultJSON
 
 
 def init_json():
@@ -167,24 +162,16 @@ def init_json():
         view = result_data[0]['fields']['view']['caption']
     contex = result_data[0]['fields']['data'][0]['caption']
 
-    itinialTitle = {
+    resultJSON.append({
         "query": view,
         "llm_version": "gpt_4",
         "language": "English",
         "course_content": {
         "course_name": contex,
         "lessons": [],
-        "lessons_content": []
+        "content": []
         }
-    }
-    resultJSON.append(itinialTitle)
-
-
-def populate_content_json(data, data_text_json=None):
-    resultJSON[0]['course_content']['lessons'].append(data)
-    if data_text_json:
-        resultJSON[0]['course_content']['lessons_content'].append(data_text_json)
-
+    })
 
 def save_json(course=None):
     global branch
@@ -193,5 +180,21 @@ def save_json(course=None):
         filename = f'{course}.json'
     else:
         filename = f'{branch}.json'
+
+    save_json_data_to_course(resultJSON, branch)
+
     with open(filename, 'w') as f:
         json.dump(resultJSON, f, indent=2)
+
+
+
+def save_json_data_to_course(JSON, branch_id):
+    try:
+        branch, created = BranchList.objects.get_or_create(branch_name=branch_id)
+        course, created = Course.objects.get_or_create(course=branch)
+        course.semantic_data = JSON
+        course.save()
+
+    except Exception as e:
+        print(f"Error saving JSON data: {e}")
+        return None

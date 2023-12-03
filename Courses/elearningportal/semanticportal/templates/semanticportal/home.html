@@ -1,0 +1,24 @@
+{% extends 'semanticportal/base.html' %}
+
+{%  block title %}
+Course information from semantic Portal
+{% endblock %}
+
+{%  block content %}
+
+{% for item in course %}
+
+  <h1>{{ item.course_content.course_name }}</h1>
+
+  {% for lesson in item.course_content.lessons %}
+    {% for content_item in item.course_content.content %}
+      {% for title, content in content_item.items %}
+        <h3>{{ title }}</h3>
+        <div>{{ content.content|safe }}</div>
+      {% endfor %}
+    {% endfor %}
+
+  {% endfor %}
+{% endfor %}
+
+{% endblock %}
