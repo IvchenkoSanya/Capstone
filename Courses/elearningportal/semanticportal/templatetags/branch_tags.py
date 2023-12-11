@@ -6,6 +6,11 @@ from django.db.models import Q
 register = template.Library()
 
 
+@register.filter
+def replace_dashes(value):
+    return value.replace('-', ' ').title()
+
+
 @register.simple_tag()
 def get_branchList():
     return BranchList.objects.all()

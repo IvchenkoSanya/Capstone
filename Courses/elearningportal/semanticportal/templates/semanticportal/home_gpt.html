@@ -1,26 +1,37 @@
+{% extends 'semanticportal/base.html' %}
 {% load branch_tags %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ course_content.course_name }}</title>
-</head>
+{% block title %}
+{{ course_content.course_name }}
+{% endblock %}
 
-<body>
+{% block content %}
+<div class="container">
+  <div class="row">
 
-    <h1>{{ course_content.course_name }}</h1>
+    <div class="col-lg-3">
+      <h3>Titles</h3>
+      <ul>
+        {% for lesson in course_content.lessons %}
+          <li><a href="#{{ lesson.title|slugify }}">{{ lesson.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
 
-    {% for lesson in course_content.lessons %}
-        <h2>{{ lesson.title }}</h2>
+    <div class="col-lg-9">
+      <h1>{{ course_content.course_name }}</h1>
+
+      {% for lesson in course_content.lessons %}
+        <h2 id="{{ lesson.title|slugify }}">{{ lesson.title }}</h2>
 
         {% with content=course_content.content|get:lesson.title %}
-            <div class="content-markdown">{{ content.content|safe }}</div>
+          <div class="content-markdown">{{ content.content|safe }}</div>
         {% endwith %}
 
-    {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
 
 <script
   src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -36,6 +47,16 @@
         });
     });
 </script>
-</body>
+<script>
+  // Smooth scroll script
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
 
-</html>
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+</script>
+{% endblock %}

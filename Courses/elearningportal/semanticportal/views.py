@@ -1,9 +1,15 @@
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
+
 from .forms import *
 from .utils import *
 
 
+@login_required
 def fetch_branches_semantic(request):
     # Take all data from semantic portal and save to DB - BranchList
     get_data_from_server_and_save()
@@ -18,7 +24,7 @@ def submit_result(request):
         fetch_branch(selected_branch)
         return render(request, 'semanticportal/submit_result.html', {'selected_branch': selected_branch})
 
-
+@login_required
 def write_course(request):
     print(request.method)
     if request.method == 'POST':
@@ -35,20 +41,63 @@ def write_course(request):
 
 
 def select_branches(request):
-    print('--------------')
     print(request.method)
-    print('--------------')
     if request.method == 'POST':
         form = SelectBranches(request.POST)
         if form.is_valid():
             course = fetch_empty_views_and_save(form.cleaned_data)
-            print(course)
             return render(request, 'semanticportal/home.html',
                           {'course': course})
     else:
         form = SelectBranches()
     return render(request, 'semanticportal/select_branches.html', {'form': form})
 
+
+def display_list_courses(requst):
+    courses = Course.objects.all()
+    print(courses)
+    return render(requst, 'semanticportal/course_list.html', {'courses': courses})
+
+
+def course_detail(request, course_id):
+
+    course = Course.objects.get(id=course_id)
+
+    options_available = [
+        'semantic_data' if course.semantic_data is not None else None,
+        'chat_gpt_basic' if course.chat_gpt_basic is not None else None,
+        'chat_gpt_advance' if course.chat_gpt_advance is not None else None,
+    ]
+
+    options_available = list(filter(None, options_available))
+    return render(request, 'semanticportal/course_detail.html',
+                  {'options_available': options_available, 'id': course_id})
+
+
+def option_detail(request, course_id, option):
+    course = Course.objects.get(id=course_id)
+
+    if (option == 'semantic_data'):
+        return render(request, 'semanticportal/home.html', {'course': course.semantic_data})
+    elif (option == 'chat_gpt_basic'):
+        return render(request, 'semanticportal/home_gpt.html',
+                      {'course_content': course.chat_gpt_basic['course_content']})
+    else:
+        return render(request, 'semanticportal/home_gpt.html',
+                      {'course_content': course.chat_gpt_advance['course_content']})
+
+
+class LoginUser(LoginView):
+    form_class = LoginUserForm
+    template_name = 'semanticportal/login.html'
+
+    def get_success_url(self):
+        return reverse_lazy('courses_list')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('courses_list')
 
 def display_json(request, course_instance):
     context = {'semantic_data': course_instance.semantic_data}
