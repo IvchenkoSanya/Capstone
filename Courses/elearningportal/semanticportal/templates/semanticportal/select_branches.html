@@ -15,7 +15,7 @@ Select Branches
     <form method="post" action="{% url 'select_branches' %}">
         {% csrf_token %}
 
-        <div class="mb-3">
+        <div class="mb-3 changeText">
             {{ form.as_p }}
         </div>
 
@@ -38,4 +38,28 @@ Select Branches
             });
         });
     </script>
+
+<script>
+    $(document).ready(function () {
+        // Iterate over each label within the form
+        $('.mb-3 label').each(function () {
+            // Get the input and label elements
+            var inputElement = $(this).find('input');
+            var labelText = $(this).text();
+
+            // Capitalize the first letter of each word and replace hyphens with spaces
+            labelText = labelText.replace(/-/g, ' ').replace(/\b\w/g, function (match) {
+                return match.toUpperCase();
+            });
+
+            // Wrap the input with the label and set the modified text
+            $(this).html('<div class="form-check">' +
+                '<input class="form-check-input checkbox-select" type="checkbox" name="branch" value="' + inputElement.val() + '" style="height: 15px; width: 15px;" id="' + inputElement.attr('id') + '">' +
+                '<label class="form-check-label" for="' + inputElement.attr('id') + '"><span class="branch-name">' + labelText + '</span></label>' +
+                '</div>');
+        });
+    });
+</script>
+
+
 {% endblock %}

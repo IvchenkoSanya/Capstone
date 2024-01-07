@@ -6,6 +6,11 @@ from django.db.models import Q
 register = template.Library()
 
 
+@register.filter
+def replace_dashes(value):
+    return value.replace('-', ' ').title()
+
+
 @register.simple_tag()
 def get_branchList():
     return BranchList.objects.all()
@@ -13,7 +18,11 @@ def get_branchList():
 
 @register.simple_tag()
 def get_branchUrl(branch):
-    return BranchRequest.objects.filter(course=branch).order_by('id')
+    try:
+        branch_obj = BranchList.objects.get(branch_name=branch)
+        return BranchRequest.objects.filter(course=branch_obj).order_by('id')
+    except BranchList.DoesNotExist:
+        return None
 
 
 @register.simple_tag()
@@ -36,7 +45,8 @@ def is_branch_exists(branch_name):
 @register.simple_tag()
 def save_requested_branches(branch, branch_name, data):
     # Save the data to the database
-    branch_data, created = BranchRequest.objects.get_or_create(course=branch, branch=branch_name,
+    branch_obj = BranchList.objects.get(branch_name=branch)
+    branch_data, created = BranchRequest.objects.get_or_create(course=branch_obj, branch=branch_name,
                                                                defaults={'data': data})
     branch_data.data = data
     branch_data.save()
@@ -50,3 +60,7 @@ def get_requested_branch_text(data_list, view=None):
     else:
         return BranchRequest.objects.filter(branch__in=branch_names).filter(view__isnull=True).order_by('id')
 
+
+@register.filter
+def get(dictionary, key):
+    return dictionary.get(key, {})

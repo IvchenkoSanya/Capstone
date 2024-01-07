@@ -1,0 +1,58 @@
+{% extends 'semanticportal/base.html' %}
+
+{% block title %}
+Course information from Semantic Portal
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+
+    <div class="col-lg-3">
+      <h3>Titles</h3>
+      <ul>
+        {% for item in course %}
+          {% for lesson in item.course_content.lessons %}
+            <li><a href="#{{ lesson.title|slugify }}">{{ lesson.title }}</a></li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="col-lg-9">
+  {% for item in course %}
+    <h1>{{ item.course_content.course_name }}</h1>
+
+    {% for lesson in item.course_content.lessons %}
+      <h3 id="{{ lesson.title|slugify }}">{{ lesson.title }}</h3>
+
+      {% for content_item in item.course_content.content %}
+        {% for title, content in content_item.items %}
+          {% if title == lesson.title %}
+            <div>{{ content.content|safe }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+
+    {% endfor %}
+  {% endfor %}
+</div>
+
+
+  </div>
+</div>
+
+<script>
+  // Smooth scroll script
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+</script>
+
+{% endblock %}

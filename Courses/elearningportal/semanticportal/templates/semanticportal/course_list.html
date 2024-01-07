@@ -1,0 +1,19 @@
+{% extends 'semanticportal/base.html' %}
+
+{% block title %}
+Course information
+{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <ul class="list-group mt-4">
+        {% for course in courses %}
+            {% if course.id %}
+                <li class="list-group-item">
+                    <h3><a href="{% url 'course_detail' course.id %}">{{ course.course.branch_caption }}</a></h3>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

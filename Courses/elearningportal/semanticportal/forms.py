@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 
 from semanticportal.templatetags.branch_tags import get_branchUrl
 from semanticportal.utils import return_branch_global
@@ -19,5 +20,7 @@ class SelectBranches(forms.Form):
         queryset=None,
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-select','style': 'height: 15px; width: 15px;'}))
 
-        
-        
+
+class LoginUserForm(AuthenticationForm):
+    username = forms.CharField(label='Login', widget=forms.TextInput(attrs={'class': 'form-input', 'style': 'margin-left: 26px;'}))
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input'}))

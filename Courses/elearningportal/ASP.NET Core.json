@@ -1,0 +1,33 @@
+[
+  {
+    "query": "ASP.NET Core",
+    "llm_version": "gpt_4",
+    "language": "English",
+    "course_content": {
+      "course_name": "A tour of the ASP.NET Core language",
+      "lessons": [
+        {
+          "title": "Getting Started with ASP.NET Core",
+          "topics": []
+        },
+        {
+          "title": "Building Web Applications with MVC",
+          "topics": []
+        },
+        {
+          "title": "Working with Data in ASP.NET Core",
+          "topics": []
+        },
+        {
+          "title": "Implementing Authentication and Authorization",
+          "topics": []
+        },
+        {
+          "title": "Deploying and Scaling ASP.NET Core Applications",
+          "topics": []
+        }
+      ],
+      "content": {}
+    }
+  }
+]

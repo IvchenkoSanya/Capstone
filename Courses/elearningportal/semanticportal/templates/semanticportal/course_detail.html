@@ -1,0 +1,30 @@
+{% extends 'semanticportal/base.html' %}
+
+{% block title %}
+Semantic Portal
+{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+  <h1>{{ course.course.branch_caption }}</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-4">
+      {% if options_available %}
+        <h2><p>Available Options:</p></h2>
+        {% for option in options_available %}
+          {% if option == 'semantic_data' %}
+            <a href="{% url 'option_detail' id option %}" class="btn btn-success btn-lg btn-block mb-3">Portal existing course</a>
+          {% elif option == 'chat_gpt_basic' %}
+            <a href="{% url 'option_detail' id option %}" class="btn btn-success btn-lg btn-block mb-3">AI generated Basic</a>
+          {% elif option == 'chat_gpt_advance' %}
+            <a href="{% url 'option_detail' id option %}" class="btn btn-success btn-lg btn-block mb-3">AI generated Advance</a>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p>No options available for this course.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
