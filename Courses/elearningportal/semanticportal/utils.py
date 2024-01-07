@@ -54,15 +54,12 @@ def fetch_children_recursive_and_save(branch_name):
     api_url = f'http://semantic-portal.net/api/branch/{branch_name}/children'
     headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-    print(api_url)
-
     try:
         timeout_seconds = 10
         response = requests.get(api_url, headers=headers, timeout=timeout_seconds)
         response.raise_for_status()  # Raise an exception for HTTP errors
         data = response.json()
         global branch
-
         save_requested_branches(branch, branch_name, data)
 
         # Fetch children recursively
